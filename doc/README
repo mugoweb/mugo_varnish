@@ -1,0 +1,45 @@
+Big Picture
+============
+
+The extension only helps to purge varnish cache. So it expects a site that is already configured to run with
+varnish. In other words, this extension will NOT handle what's getting cached in varnish and for how long but
+it helps to purge varnish cache:
+
+There are 3 user actions that trigger a purge:
+1) It automatically purge cache after updating a content node (purge on publish)
+2) It allows administrators to submit a list of URLs or regular expressions to purge varnish cache
+3) User clears all "Static" cache in the admin UI (the CLI script might trigger it as well)
+
+
+Purge on publish
+=================
+The extension code hocks into the ContentCache handling. After publishing a node, eZ Publish ContentCache
+handling is smart enough to compile a list of related node ids.
+The ContentCache manager submits all compiled node ids to a StaticCache handler. The StaticCache handler is responsible to resolve
+the node ids to URLs and then purge those URLs in Varnish.
+
+A node id is resolved to
+
+a) Node URL
+b) System URLs (optional)
+c) Object translations URLs
+d) Custom URL aliases
+
+The process to resolve a node id to URLs is configurable to incoperate different system setups. See mugo_varnish.ini for details.
+
+The StaticCache handler collects those URLs and register a CleanUp handler that gets executed at the end of the pageload.
+The CleanUp handler loops over all collected URLs and uses the VarnishPurger to send the purge requests to varnish servers.
+
+The varnish configuration knows 3 different ways to purge cache:
+
+a) Purge a given URL
+b) Purge a given Regular Expresion
+c) Purge a given list of URLs
+
+In case of a) and c) the varnish configuration is building 2 Regular Expressions for each given URL. Here an example:
+
+Given URL: /about_us/contact
+1st RegEx: ^/about_us/contact$
+2nd RegEx: ^/about_us/contact/\\(
+
+The 2nd rule is responsible to clear all view parameter variations for a node.

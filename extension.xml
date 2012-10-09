@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<software>
+    <metadata>
+        <name>Mugo Varnish Purge</name>
+        <version>0.1</version>
+        <copyright>http://www.mugo.ca</copyright>
+        <license>GNU General Public License v2.0</license>
+        <software/>
+    </metadata>
+
+    <dependencies/>
+</software>
