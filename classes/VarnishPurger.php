@@ -27,12 +27,13 @@ class VarnishPurger
 		$ini_varnish = eZINI::instance( 'mugo_varnish.ini' );
 		$this->debug               = $ini_varnish->variable( 'VarnishSettings', 'DebugCurl' ) == 'enabled';
 		$this->varnishServers      = $ini_varnish->variable( 'VarnishSettings', 'VarnishServers' );
-		
+				
 		// override connection timeout
-		if( $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' ) > -1 )
+		if( ( $connectionTimeout = $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' ) ) > -1 )
 		{
-			$this->baseCurlOptions[ CURLOPT_CONNECTTIMEOUT ] = $this->connectionTimeout;
+			$this->baseCurlOptions[ CURLOPT_CONNECTTIMEOUT ] = $connectionTimeout;
 		}
+		
 		
 		// make sure the log file exits
 		if( !file_exists( self::CURL_DEBUG_OUTPUT_FILE ) )
