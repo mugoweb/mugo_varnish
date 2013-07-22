@@ -31,7 +31,7 @@ class VarnishPurger
 		// override connection timeout
 		if( $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' ) > -1 )
 		{
-			$this->baseCurlOptions[ CURLOPT_CONNECTTIMEOUT ] = $this->connectionTimeout;
+			$this->baseCurlOptions[ CURLOPT_CONNECTTIMEOUT ] = $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' );
 		}
 		
 		// make sure the log file exits
