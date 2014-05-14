@@ -7,5 +7,3 @@ class MugoVarnishCleanUpHandler
 		StaticCacheMugoVarnish::purgeList();
 	}
 }
-
-?>

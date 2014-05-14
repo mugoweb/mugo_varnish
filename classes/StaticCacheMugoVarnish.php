@@ -129,11 +129,36 @@ class StaticCacheMugoVarnish implements ezpStaticCache
 		}
 	}
 	
+	/**
+	 * Make interface happy
+	 * 
+	 * @param type $url
+	 * @param type $nodeID
+	 * @param type $skipExisting
+	 * @param type $delay
+	 */
 	public function cacheURL( $url, $nodeID = false, $skipExisting = false, $delay = true )
 	{}
 
+	/**
+	 * Make interface happy
+	 * 
+	 * @param type $url
+	 */
 	public function removeURL( $url )
 	{}
+	
+	/**
+	 * Generates a user hash for the current user.
+	 * 
+	 * @param string $newSession
+	 * @return string
+	 */
+	public function getUserHash( $newSession )
+	{
+		$userDetails = eZUser::currentUser()->getUserCache();
+		return md5( serialize( array( $userDetails[ 'roles' ], $userDetails[ 'role_limitations' ] ) ) );
+	}
 	
 	private function nodeId2Urls( $nodeId )
 	{
@@ -204,5 +229,3 @@ class StaticCacheMugoVarnish implements ezpStaticCache
 		}
 	}
 }
-
-?>

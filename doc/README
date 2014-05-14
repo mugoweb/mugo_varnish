@@ -43,3 +43,19 @@ Given URL: /about_us/contact
 2nd RegEx: ^/about_us/contact/\\(
 
 The 2nd rule is responsible to clear all view parameter variations for a node.
+
+
+Cache varations based on an user hash
+=======================================
+This is an optional feature and ONLY works for some websites. The idea is to have different cache object in varnish
+based on the logged in user. The user differ in the roles (permissions) they have assigned to them. Based on those
+roles, you can build a user hash and use it for the cache object varations in varnish.
+
+There are 2 parts to this feature:
+1) You need to have a special varnish configuration. An example is in doc/examples/userhash.vcl
+2) You need to enable an ezpEvent listener that will calculate and write the user hash whenever ez publish creates a
+new session ID. Please see site.ini and classes/MugoVarnishEvents.php
+
+Why does it only works for some websites? Well, it's not secure -- you cannot rely on a client cookie for the roles
+and permissions. It's hard/impossible to adjust the user hash cookie - but you could save and share a user hash cookie
+with other users.
