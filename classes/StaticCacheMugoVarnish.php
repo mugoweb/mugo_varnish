@@ -151,10 +151,9 @@ class StaticCacheMugoVarnish implements ezpStaticCache
 	/**
 	 * Generates a user hash for the current user.
 	 * 
-	 * @param string $newSession
 	 * @return string
 	 */
-	public function getUserHash( $newSession )
+	public function getUserHash()
 	{
 		$userDetails = eZUser::currentUser()->getUserCache();
 		return md5( serialize( array( $userDetails[ 'roles' ], $userDetails[ 'role_limitations' ] ) ) );

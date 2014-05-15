@@ -4,6 +4,9 @@
 # based on the cookie value.
 #
 
+# Uncomment this if you need to write to the syslog file
+#import std;
+
 backend default {
      .host = "127.0.0.1";
      .port = "80";
@@ -49,13 +52,14 @@ sub vcl_hash {
     }
 
     # Cache variations based on a provided cookie value
-    if (req.http.cookie ~ "vuserhash=") {
+    # But we exclude page assests like images, css and javascript
+    if( req.url !~ "\.(jpeg|jpg|png|gif|ico|swf|js|css)(\?.*|)$" && req.http.cookie ~ "vuserhash=" ) {
         hash_data( regsub( req.http.cookie, ".*vuserhash=([^;]+);.*", "\1" ) );
     }
 
     return (hash);
 }
- 
+
 sub vcl_deliver {
   set resp.http.X-Served-By = server.hostname;
   if (obj.hits > 0) {
@@ -67,4 +71,26 @@ sub vcl_deliver {
 
   return( deliver );
 }
- 
+
+
+sub vcl_fetch {
+    
+    # Backend only sends vuserhash cookie for HTML responses
+    if( beresp.http.set-cookie ~ ".*vuserhash=([^;]+);.*" )
+    {
+        # Check if client has invalid user hash value
+        # Comparing client cookie with server response cookie
+        if( regsub( beresp.http.set-cookie, ".*vuserhash=([^;]+);.*", "\1" ) != regsub( req.http.cookie, ".*vuserhash=([^;]+);.*", "\1" ) )
+        {
+            #std.syslog(180, "VARNISH: Invalid cookie found." );
+            return( hit_for_pass );
+        }
+        else
+        {
+            # Making sure object gets cached -- even with set-cookie header
+            return( deliver );
+        }
+    }
+
+    #no return value in order to trigger default behavior
+}
