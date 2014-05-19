@@ -155,8 +155,16 @@ class StaticCacheMugoVarnish implements ezpStaticCache
 	 */
 	public function getUserHash()
 	{
+        $ini = eZINI::instance( 'mugo_varnish.ini' );
 		$userDetails = eZUser::currentUser()->getUserCache();
-		return md5( serialize( array( $userDetails[ 'roles' ], $userDetails[ 'role_limitations' ] ) ) );
+        $hashArray = array( $userDetails[ 'roles' ], $userDetails[ 'role_limitations' ] );
+        
+        // To increase security, we can also use a once-daily timestamp to build the user hash
+        if( $ini->variable( 'VarnishSettings', 'AppendTimestampToUserHash' ) == 'enabled' )
+        {
+            $hashArray[] = strtotime( 'today' );
+        }
+		return md5( serialize( $hashArray ) );
 	}
 	
 	private function nodeId2Urls( $nodeId )

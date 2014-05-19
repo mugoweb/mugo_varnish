@@ -52,7 +52,12 @@ sub vcl_hash {
     }
 
     # Cache variations based on a provided cookie value
-    # But we exclude page assests like images, css and javascript
+    # But we exclude page assets like images, css and javascript
+    # You could also exclude by path:
+    # req.url != "^/var/[^/]+/(storage|cache)/.*" &&
+    # req.url != "^/extension/[^/]+/design/[^/]+/(stylesheets|images|lib|javascripts?|flash)/.*" &&
+    # req.url != "^/design/[^/]+/(stylesheets|images|javascripts?|lib|flash)/.*" &&
+    # req.url != "^/share/icons/.*"
     if( req.url !~ "\.(jpeg|jpg|png|gif|ico|swf|js|css)(\?.*|)$" && req.http.cookie ~ "vuserhash=" ) {
         hash_data( regsub( req.http.cookie, ".*vuserhash=([^;]+);.*", "\1" ) );
     }
@@ -69,6 +74,9 @@ sub vcl_deliver {
     set resp.http.X-Cache = "MISS";	
   }
 
+  # Tell the browser that you want to cache differently based on the vuserhash cookie
+  set resp.http.Vary = "Cookie";
+
   return( deliver );
 }
 
@@ -76,7 +84,7 @@ sub vcl_deliver {
 sub vcl_fetch {
     
     # Backend only sends vuserhash cookie for HTML responses
-    if( beresp.http.set-cookie ~ ".*vuserhash=([^;]+);.*" )
+    if( beresp.http.set-cookie ~ "vuserhash=([^;]+);" )
     {
         # Check if client has invalid user hash value
         # Comparing client cookie with server response cookie
