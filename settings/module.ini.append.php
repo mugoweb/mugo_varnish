@@ -5,4 +5,4 @@ ExtensionRepositories[]=mugo_varnish
 
 ModuleList[]=varnish
 
-*/ ?>
+*/

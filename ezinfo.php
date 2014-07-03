@@ -17,5 +17,3 @@ class mugo_varnishInfo
                     );
     }
 }
-
-?>

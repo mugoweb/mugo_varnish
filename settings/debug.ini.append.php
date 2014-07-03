@@ -3,4 +3,4 @@
 [GeneralCondition]
 mugovarnish-general=enabled
 
-*/ ?>
+*/
