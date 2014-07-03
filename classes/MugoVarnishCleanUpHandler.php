@@ -2,8 +2,8 @@
 
 class MugoVarnishCleanUpHandler
 {
-	public static function purgeList()
-	{
-		StaticCacheMugoVarnish::purgeList();
-	}
+    public static function purgeList()
+    {
+        StaticCacheMugoVarnish::purgeList();
+    }
 }
