@@ -10,4 +10,4 @@ StaticCacheHandler=StaticCacheMugoVarnish
 #Listeners[]=response/preoutput@MugoVarnishEvents::preoutput
 #Listeners[]=session/regenerate@MugoVarnishEvents::regenerateSession
 
-*/ ?>
+*/

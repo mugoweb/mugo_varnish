@@ -23,4 +23,4 @@ Shown[navigation]=true
 Shown[browse]=false
 PolicyList[]=varnish/manage
 
-*/ ?>
+*/
