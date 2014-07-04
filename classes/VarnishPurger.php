@@ -173,5 +173,3 @@ class VarnishPurger
 		return $return;;
 	}
 }
-
-?>
