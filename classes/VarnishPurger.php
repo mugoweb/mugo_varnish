@@ -3,7 +3,7 @@
 class VarnishPurger
 {
 	public static function Instance()
-    {
+	{
 		static $inst = null;
 		if( $inst == null )
 				$inst = new VarnishPurger();
