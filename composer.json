@@ -1,0 +1,14 @@
+{
+    "name": "mugoweb/mugo_varnish",
+    "description": "This extension integrates eZ Publish operations with Varnish; for example, it will purge the relevant Varnish caches when content is edited in eZ Publish",
+    "type": "ezpublish-legacy-extension",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Philipp Kamps"
+        }
+    ],
+    "require": {
+        "ezsystems/ezpublish-legacy-installer": "*"
+    }
+}
