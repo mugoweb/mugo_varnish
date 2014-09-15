@@ -45,6 +45,8 @@ class VarnishPurger
         }
     }
     
+    private function __clone() { }
+    
     /**
      * Purges a given list of URLs
      * 
