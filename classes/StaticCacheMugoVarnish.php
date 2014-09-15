@@ -120,7 +120,7 @@ class StaticCacheMugoVarnish implements ezpStaticCache
     {
         if( $force )
         {
-            $purger = VarnishPurger::Instance();
+            $purger = VarnishPurger::instance();
             return $purger->purge( '.*', true );
         }
         else
@@ -222,7 +222,7 @@ class StaticCacheMugoVarnish implements ezpStaticCache
         $urlsToPurgeLimited = array_slice( self::$urlsToPurge, 0, $limit );
 
         // Call purger to do the job
-        $purger = VarnishPurger::Instance();
+        $purger = VarnishPurger::instance();
         if( $ini_varnish->variable( 'VarnishSettings', 'UseCurlMultiHandler' ) == 'enabled' )
         {
             $purger->purgeList( $urlsToPurgeLimited );

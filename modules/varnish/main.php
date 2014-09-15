@@ -32,7 +32,7 @@ if( isset( $_REQUEST[ 'regex' ] ) )
 }
 
 
-$vp = VarnishPurger::Instance();
+$vp = VarnishPurger::instance();
 
 if( !empty( $purge_urls ) )
 {

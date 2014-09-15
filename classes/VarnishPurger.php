@@ -2,7 +2,8 @@
 
 class VarnishPurger
 {
-    public static function Instance()
+    
+    public static function instance()
     {
         static $inst = null;
         if( $inst == null )
