@@ -3,12 +3,15 @@
 class VarnishPurger
 {
     
+    protected static $inst;
+    
     public static function instance()
     {
-        static $inst = null;
-        if( $inst == null )
-                $inst = new VarnishPurger();
-        return $inst;
+        if ( !isset(self::$inst) )
+        {
+            self::$inst = new self;
+        }
+        return self::$inst;
     }
 
     const CURL_DEBUG_OUTPUT_FILE = 'var/log/curldebug.log';
