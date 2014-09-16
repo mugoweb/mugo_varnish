@@ -53,6 +53,15 @@ class VarnishPurger
 		
 		if( !empty( $urls ) && !empty( $this->varnishServers ) )
 		{
+		
+			$fd = false;
+			$verbose = false;
+			if( $this->debug )
+			{
+				$fd = fopen( self::CURL_DEBUG_OUTPUT_FILE, 'w' );
+				$verbose = true;
+			}
+			
 			foreach( $urls as $url_i => $url )
 			{
 				if( $url )
@@ -62,6 +71,8 @@ class VarnishPurger
 						// build curl options
 						$options = $this->baseCurlOptions;
 						$options[ CURLOPT_HTTPHEADER ] = array( 'X-Purge-Url' . ': ' . $url );
+						$options[ CURLOPT_VERBOSE ] = $verbose;
+						$options[ CURLOPT_STDERR ]  = $fd;
 						
 						// add curl request
 						$key = $server_i . '_' . $url_i;
@@ -106,6 +117,11 @@ class VarnishPurger
 			else
 			{
 				eZDebug::writeNotice( 'No URLs to purge.', 'mugovarnish-general' );
+			}
+			
+			if( $fd !== false )
+			{
+				fclose( $fd );
 			}
 		}
 		else
