@@ -90,7 +90,7 @@ Varnish 2.1 syntax:
 	}
 
 3. You need to store the URL on the cache object - ban lurker friendly.
-   Therefore add folling in the sub vlc_fetch:
+   Therefore add the following in the sub vcl_fetch:
 
      # add URL to object
      set beresp.http.x-url = req.url;
