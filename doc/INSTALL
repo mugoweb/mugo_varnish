@@ -89,7 +89,8 @@ Varnish 2.1 syntax:
 		error 405 "Missing X-Purge-Url or X-Purge-Reg header.";
 	}
 
-3. You need to store the URL on the cache object - ban lurker friendly.
+3. You need to store the URL on the cache object - ban lurker friendly
+   (see https://www.varnish-cache.org/docs/3.0/tutorial/purging.html#bans).
    Therefore add the following in the sub vcl_fetch:
 
      # add URL to object
