@@ -61,7 +61,7 @@ class VarnishPurger
 			$verbose = false;
 			if( $this->debug )
 			{
-				$fd = fopen( self::CURL_DEBUG_OUTPUT_FILE, 'w' );
+				$fd = fopen( self::CURL_DEBUG_OUTPUT_FILE, 'a' );
 				$verbose = true;
 			}
 			
@@ -158,7 +158,7 @@ class VarnishPurger
 		$fd = false;
 		if( $this->debug )
 		{
-			$fd = fopen( self::CURL_DEBUG_OUTPUT_FILE, 'w' );
+			$fd = fopen( self::CURL_DEBUG_OUTPUT_FILE, 'a' );
 			$curlOptionList[ CURLOPT_VERBOSE ] = true;
 			$curlOptionList[ CURLOPT_STDERR ]  = $fd;
 		}
