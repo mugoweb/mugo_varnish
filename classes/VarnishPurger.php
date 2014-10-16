@@ -11,8 +11,10 @@ class VarnishPurger
 	}
 
 	const CURL_DEBUG_OUTPUT_FILE = 'var/log/curldebug.log';
+	const PURGES_LOG_FILE        = 'mugo_varnish_purges.log';
 	
 	private $debug = false;
+	private $logPurges = false;
 	private $varnishServers = array();
 	private $baseCurlOptions = array(
 	                              CURLOPT_RETURNTRANSFER => true,
@@ -26,6 +28,7 @@ class VarnishPurger
 	{
 		$ini_varnish = eZINI::instance( 'mugo_varnish.ini' );
 		$this->debug               = $ini_varnish->variable( 'VarnishSettings', 'DebugCurl' ) == 'enabled';
+		$this->logPurges           = $ini_varnish->variable( 'VarnishSettings', 'LogPurges' ) == 'enabled';
 		$this->varnishServers      = $ini_varnish->variable( 'VarnishSettings', 'VarnishServers' );
 		
 		// override connection timeout
@@ -113,6 +116,8 @@ class VarnishPurger
 				curl_multi_close( $mh );
 				
 				eZDebug::writeNotice( 'List of URLs purged.', 'mugovarnish-general' );
+
+				$this->writePurgeLog( $urls );
 			}
 			else
 			{
@@ -179,6 +184,11 @@ class VarnishPurger
 			
 				eZDebug::writeNotice( 'Purge as '. $http_header .': "' . $url . '". Success: ' . $return, 'mugovarnish-general' );
 
+				if( $return !== false )
+				{
+					$this->writePurgeLog( array( $url ) );
+				}
+
 				curl_close( $curlHandler );
 			}
 		}
@@ -189,5 +199,17 @@ class VarnishPurger
 		}
 
 		return $return;;
+	}
+
+	private function writePurgeLog( array $urls )
+	{
+		if( $this->logPurges )
+		{
+			foreach( $urls as $url )
+			{
+	                        $msg = 'Purge OK: ' . $url;
+				eZLog::write( $msg, self::PURGES_LOG_FILE );
+			}
+		}
 	}
 }
