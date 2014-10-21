@@ -38,12 +38,14 @@ class MugoVarnishEvents
     {
 		$wwwDir = eZSys::wwwDir();
 		// On host based site accesses this can be empty, causing the cookie to be set for the current dir,
-		// but we want it to be set for the whole eZ publish site
+		// but we want it to be set for the whole eZ Publish site
 		$cookiePath = $wwwDir != '' ? $wwwDir : '/';
 
+        $ini = eZINI::instance();
+		
 		if( eZUser::isCurrentUserRegistered() )
 		{
-			setcookie( 'vuserhash', self::getUserHash( $newSession ), 0, $cookiePath );
+			setcookie( 'vuserhash', self::getUserHash( $newSession ), time() + $ini->variable( 'Session', 'SessionTimeout' ), $cookiePath );
 		}
 		elseif( $unsetCookie )
 		{

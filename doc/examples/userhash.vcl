@@ -6,6 +6,8 @@
 
 # Uncomment this if you need to write to the syslog file
 #import std;
+# You need to compile libvmod_header from https://github.com/varnish/libvmod-header
+import header;
 
 backend default {
      .host = "127.0.0.1";
@@ -84,11 +86,12 @@ sub vcl_deliver {
 sub vcl_fetch {
     
     # Backend only sends vuserhash cookie for HTML responses
-    if( beresp.http.set-cookie ~ "vuserhash=([^;]+);" )
+    # We have to use the "header" Varnish module so that it can read multiple set-cookie headers
+    if( header.get( beresp.http.set-cookie, "vuserhash=" ) )
     {
         # Check if client has invalid user hash value
         # Comparing client cookie with server response cookie
-        if( regsub( beresp.http.set-cookie, ".*vuserhash=([^;]+);.*", "\1" ) != regsub( req.http.cookie, ".*vuserhash=([^;]+);.*", "\1" ) )
+        if( regsub( header.get( beresp.http.set-cookie, "vuserhash=" ), "vuserhash=([^;]+).*", "\1" ) != regsub( bereq.http.cookie, ".*vuserhash=([^;]+).*", "\1" ) )
         {
             #std.syslog(180, "VARNISH: Invalid cookie found." );
             return( hit_for_pass );
