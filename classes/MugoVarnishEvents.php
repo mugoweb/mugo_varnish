@@ -45,7 +45,7 @@ class MugoVarnishEvents
 		
 		if( eZUser::isCurrentUserRegistered() )
 		{
-			setcookie( 'vuserhash', self::getUserHash( $newSession ), time() + $ini->variable( 'Session', 'SessionTimeout' ), $cookiePath );
+			setcookie( 'vuserhash', self::getUserHash(), time() + $ini->variable( 'Session', 'SessionTimeout' ), $cookiePath );
 		}
 		elseif( $unsetCookie )
 		{
