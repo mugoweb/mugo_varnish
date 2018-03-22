@@ -1,4 +1,5 @@
-<?php /*
+<?php
+/* #?ini charset="utf-8"?
 
 [NavigationPart]
 Part[varnishnavigationpart]=varnish

@@ -7,7 +7,7 @@ $fp = fsockopen( $host, $port, $errno, $errstr, 3);
 
 if( !$fp )
 {
-	echo "$errstr ($errno)<br />\n";
+    echo "$errstr ($errno)<br />\n";
 }
 else
 {
