@@ -29,22 +29,19 @@ Varnish >= 3.0 syntax:
 ```
 if( req.request == "PURGE" )
 {
-    if( req.request == "PURGE" )
+    # Limit access for security reasons
+    if( !client.ip ~ purge )
     {
-        # Limit access for security reasons
-        if( !client.ip ~ purge )
-        {
-            error 405 "Not allowed.";
-        }
-
-        if( req.http.X-Ban-Condition )
-        {
-            ban( req.http.X-Ban-Condition );
-            error 200 "Purged: " + req.http.X-Ban-Condition;
-        }
-
-        error 500 "Missing X-Ban-Condition header.";
+        error 405 "Not allowed.";
     }
+
+    if( req.http.X-Ban-Condition )
+    {
+        ban( req.http.X-Ban-Condition );
+        error 200 "Purged: " + req.http.X-Ban-Condition;
+    }
+
+    error 500 "Missing X-Ban-Condition header.";
 }
 ```       
 
