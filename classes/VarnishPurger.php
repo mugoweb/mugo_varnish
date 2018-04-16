@@ -17,30 +17,31 @@ class VarnishPurger
     }
 
     const CURL_DEBUG_OUTPUT_FILE = 'var/log/curldebug.log';
-    const PURGES_LOG_FILE        = 'mugo_varnish_purges.log';
+    const PURGES_LOG_FILE = 'mugo_varnish_purges.log';
     
     private $debug = false;
     private $logPurges = false;
     private $varnishServers = array();
-    private $baseCurlOptions = array(
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_CUSTOMREQUEST  => 'PURGE',
-        CURLOPT_HEADER         => true ,
-        CURLOPT_NOBODY         => true,
-        CURLOPT_CONNECTTIMEOUT => 1,
-    );
-    
+    private $baseCurlOptions = array();
+
     private function __construct()
     {
         $ini_varnish = eZINI::instance( 'mugo_varnish.ini' );
         $this->debug          = $ini_varnish->variable( 'VarnishSettings', 'DebugCurl' ) == 'enabled';
         $this->logPurges      = $ini_varnish->variable( 'VarnishSettings', 'LogPurges' ) == 'enabled';
         $this->varnishServers = $ini_varnish->variable( 'VarnishSettings', 'VarnishServers' );
-        
+        $this->baseCulOptions = array(
+            'CURLOPT_RETURNTRANSFER' => true,
+            'CURLOPT_CUSTOMREQUEST'  => 'PURGE',
+            'CURLOPT_HEADER'         => true ,
+            'CURLOPT_NOBODY'         => true,
+            'CURLOPT_CONNECTTIMEOUT' => 1,
+        );
+
         // override connection timeout
         if( $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' ) > -1 )
         {
-            $this->baseCurlOptions[ CURLOPT_CONNECTTIMEOUT ] = $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' );
+            $this->baseCurlOptions[ 'CURLOPT_CONNECTTIMEOUT' ] = $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' );
         }
         
         // make sure the log file exits
