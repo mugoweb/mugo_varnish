@@ -30,6 +30,10 @@ class VarnishPurger
         $this->debug          = $ini_varnish->variable( 'VarnishSettings', 'DebugCurl' ) == 'enabled';
         $this->logPurges      = $ini_varnish->variable( 'VarnishSettings', 'LogPurges' ) == 'enabled';
         $this->varnishServers = $ini_varnish->variable( 'VarnishSettings', 'VarnishServers' );
+
+        if ( class_exists( 'ezpEvent', false ) )
+            $this->varnishServers = ezpEvent::getInstance()->filter( 'mugo_varnish/varnish_server', $this->varnishServers );
+
         $this->baseCulOptions = array(
             'CURLOPT_RETURNTRANSFER' => true,
             'CURLOPT_CUSTOMREQUEST'  => 'PURGE',
