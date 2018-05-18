@@ -34,18 +34,18 @@ class VarnishPurger
         if ( class_exists( 'ezpEvent', false ) )
             $this->varnishServers = ezpEvent::getInstance()->filter( 'mugo_varnish/varnish_server', $this->varnishServers );
 
-        $this->baseCulOptions = array(
-            'CURLOPT_RETURNTRANSFER' => true,
-            'CURLOPT_CUSTOMREQUEST'  => 'PURGE',
-            'CURLOPT_HEADER'         => true ,
-            'CURLOPT_NOBODY'         => true,
-            'CURLOPT_CONNECTTIMEOUT' => 1,
+        $this->baseCurlOptions = array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST  => 'PURGE',
+            CURLOPT_HEADER         => true ,
+            CURLOPT_NOBODY         => true,
+            CURLOPT_CONNECTTIMEOUT => 1,
         );
 
         // override connection timeout
         if( $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' ) > -1 )
         {
-            $this->baseCurlOptions[ 'CURLOPT_CONNECTTIMEOUT' ] = $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' );
+            $this->baseCurlOptions[ CURLOPT_CONNECTTIMEOUT ] = $ini_varnish->variable( 'VarnishSettings', 'ConnectionTimeout' );
         }
         
         // make sure the log file exits
