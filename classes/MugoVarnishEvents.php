@@ -56,10 +56,11 @@ class MugoVarnishEvents
     
     /**
      * Gets an instance of the StaticCacheHandler and ask it for the user hash.
-     * 
+     * @throws ezcBasePropertyNotFoundException
+     * @throws ezcBaseValueException
      * @return string
      */
-    static function getUserHash()
+    public static function getUserHash()
     {
         $optionArray = array( 'iniFile'      => 'site.ini',
                               'iniSection'   => 'ContentSettings',
@@ -71,4 +72,34 @@ class MugoVarnishEvents
 
         return $staticCacheHandler->getUserHash();
     }
+
+
+    /**
+     * Injects X-Location-Id HTTP header for Varnish cache clearing purposes
+     * Takes advantage of content/view listener
+     * Activated in [Event] block of site.ini
+     * Listeners[]=content/view@MugoVarnishEvents::addXLocationIdHeader
+     *
+     * @param int $nodeID
+     * @param eZINI $siteINI
+     *
+     * @return int
+     */
+    public static function addXLocationIdHeader($nodeID, eZINI $siteINI)
+    {
+        header('X-Location-Id: ' . (int)$nodeID);
+
+        return $nodeID;
+    }
+
+    /**
+     * Activated in [Event] block of site.ini
+     * Listeners[]=content/cache/all@MugoVarnishEvents::purgeAll
+     */
+    public static function purgeAll()
+    {
+        $staticMugoVarnish = new StaticCacheMugoVarnish();
+        $staticMugoVarnish->generateCache(true);
+    }
+
 }
