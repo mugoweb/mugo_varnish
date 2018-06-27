@@ -15,10 +15,17 @@ class StaticCacheMugoVarnish implements ezpStaticCache
     
     static private $cleanUpHandlerRegistered = false;
     static protected $banConditions = array();
+
+    protected $useContentSettingsCacheThresholdValue;
     
     public function __construct()
     {
         $this->settings = eZINI::instance( 'mugo_varnish.ini' );
+
+        if( $this->settings->hasVariable( 'VarnishSettings', 'UseCacheThresholdValue' ) )
+        {
+            $this->useContentSettingsCacheThresholdValue = $this->settings->variable( 'VarnishSettings', 'UseCacheThresholdValue' ) == 'enabled';
+        }
 
         if( $this->settings->hasVariable( 'PurgeUrlBuilder', 'BuilderClass' ) )
         {
@@ -60,12 +67,24 @@ class StaticCacheMugoVarnish implements ezpStaticCache
 
         if( !empty( $nodeList ) )
         {
-            foreach( $nodeList as $nodeId )
+            $doClearNodeList = true;
+            if ($this->useContentSettingsCacheThresholdValue){
+                $cleanupValue = eZContentCache::calculateCleanupValue( count( $nodeList ) );
+                $doClearNodeList = eZContentCache::inCleanupThresholdRange( $cleanupValue );
+            }
+            if ( $doClearNodeList )
             {
-                self::$banConditions = array_merge(
-                    self::$banConditions,
-                    $this->builder->buildConditionForNodeIdCache( $nodeId )
-                );
+                foreach( $nodeList as $nodeId )
+                {
+                    self::$banConditions = array_merge(
+                        self::$banConditions,
+                        $this->builder->buildConditionForNodeIdCache( $nodeId )
+                    );
+                }
+            }
+            else
+            {
+                $this->generateCache(true);
             }
         }
         
